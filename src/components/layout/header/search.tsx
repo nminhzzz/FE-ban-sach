@@ -12,8 +12,9 @@ const SearchHeader = () => {
     setIsSearching,
     setCategoryBook 
   } = useCurrentApp();
+  // local loading kept via debounce; not used in UI
   const [loading, setLoading] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSearch = async (value: string) => {
     if (!value.trim()) {
@@ -75,7 +76,6 @@ const SearchHeader = () => {
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
         prefix={<SearchOutlined />}
-        loading={loading}
         allowClear
         onClear={() => {
           setSearchTerm("");

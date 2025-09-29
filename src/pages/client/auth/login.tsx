@@ -25,7 +25,15 @@ const LoginPage = () => {
         localStorage.setItem("access_token", res.data?.access_token!);
         message.success("Đăng nhập thành công");
         setAuthentic(true);
-        setUser(res.data?.user!);
+        const u = res.data?.user!;
+        setUser({
+          email: u.email,
+          phone: u.phone,
+          fullName: u.fullName,
+          role: u.role,
+          avatar: u.avatar,
+          id: u._id,
+        });
         navigate("/");
       } else {
         message.error(`Đăng nhập thất bại: ${res.message}`);

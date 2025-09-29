@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { App, Divider, Drawer, Space, Table, Tag } from "antd";
+import { App, Divider, Drawer, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import dayjs from "dayjs";
 import { historyAPI } from "@/services/api";
@@ -9,19 +9,19 @@ const HistoryPage = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
-      render: (item, record, index) => <>{index + 1}</>,
+      render: (_item, _record, index) => <>{index + 1}</>,
     },
     {
       title: "Thời gian ",
       dataIndex: "createdAt",
-      render: (item, record, index) => {
+      render: (item) => {
         return dayjs(item).format("YYYY-MM-DD");
       },
     },
     {
       title: "Tổng số tiền",
       dataIndex: "totalPrice",
-      render: (item, record, index) => {
+      render: (item) => {
         return new Intl.NumberFormat("vi-VN", {
           style: "currency",
           currency: "VND",
@@ -30,7 +30,7 @@ const HistoryPage = () => {
     },
     {
       title: "Trạng thái",
-      render: (item, record, index) => (
+      render: (_item, record) => (
         <Tag color={record.paymentStatus === "UNPAID" ? "volcano" : "green"}>
           {record.paymentStatus}
         </Tag>
