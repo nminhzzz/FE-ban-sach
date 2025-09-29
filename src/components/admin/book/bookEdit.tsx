@@ -1,0 +1,251 @@
+import React, { useEffect, useState } from "react";
+import {
+  Modal,
+  Button,
+  Form,
+  Input,
+  Select,
+  message,
+  InputNumber,
+  Upload,
+} from "antd";
+import type { FormProps } from "antd";
+import { EditOutlined, UploadOutlined } from "@ant-design/icons";
+import type { UploadProps } from "antd";
+import { CreateBook, UpdateBook, UpLoadImage } from "@/services/api";
+
+const { Option } = Select;
+
+type TProps = {
+  oldBook: IBook;
+  fetchBook: () => void;
+};
+
+const BookEdit: React.FC<TProps> = ({ oldBook, fetchBook }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [thumbnail, setThumbnail] = useState<string>("");
+  const [sliders, setSliders] = useState<string[]>([]);
+  const [thumbnailFileList, setThumbnailFileList] = useState<any[]>([]);
+  const [sliderFileList, setSliderFileList] = useState<any[]>([]);
+
+  // Khi nhận oldBook
+  useEffect(() => {
+    if (oldBook) {
+      setThumbnailFileList([
+        {
+          uid: "-1",
+          name: oldBook.thumbnail,
+          status: "done",
+          url: `${import.meta.env.VITE_BACKEND}/images/book/${
+            oldBook.thumbnail
+          }`,
+        },
+      ]);
+
+      setSliderFileList(
+        oldBook.slider?.map((url: string, index: number) => ({
+          uid: String(index),
+          name: `slider-${index}.jpg`,
+          status: "done",
+          url: `${import.meta.env.VITE_BACKEND}/images/book/${url}`,
+        }))
+      );
+
+      // đồng bộ state ảnh
+      setThumbnail(oldBook.thumbnail || "");
+      setSliders(oldBook.slider || []);
+    }
+  }, [oldBook]);
+
+  // Upload thumbnail
+  const props: UploadProps = {
+    listType: "picture",
+    fileList: thumbnailFileList,
+    onChange: ({ fileList }) => setThumbnailFileList(fileList),
+    onRemove: () => {
+      // xóa trong state luôn
+      setThumbnail("");
+    },
+    customRequest: async ({ file, onSuccess, onError }) => {
+      try {
+        const formData = new FormData();
+        formData.append("fileImg", file as Blob);
+        const res = await UpLoadImage(formData, "book");
+        if (res.statusCode === 201) {
+          message.success("upload thành công");
+          setThumbnail(res.data?.fileUploaded!);
+        } else {
+          message.error("upload thất bại");
+        }
+        onSuccess?.(res, file as any);
+      } catch (err) {
+        console.error("Upload failed", err);
+        onError?.(err as Error);
+      }
+    },
+  };
+
+  // Upload slider
+  const slider: UploadProps = {
+    listType: "picture",
+    multiple: true,
+    fileList: sliderFileList,
+    onChange: ({ fileList }) => setSliderFileList(fileList),
+    onRemove: (file) => {
+      // xóa ảnh khỏi state sliders
+      setSliders((prev) =>
+        prev.filter(
+          (url) =>
+            `${import.meta.env.VITE_BACKEND}/images/book/${url}` !== file.url
+        )
+      );
+    },
+    customRequest: async ({ file, onSuccess, onError }) => {
+      try {
+        const formData = new FormData();
+        formData.append("fileImg", file as Blob);
+        const res = await UpLoadImage(formData, "book");
+        if (res.statusCode === 201) {
+          message.success("upload thành công");
+          setSliders((prev) => [...prev, res.data?.fileUploaded as string]);
+        } else {
+          message.error("upload thất bại");
+        }
+        onSuccess?.(res, file as any);
+      } catch (err) {
+        console.error("Upload failed", err);
+        onError?.(err as Error);
+      }
+    },
+  };
+
+  const onFinish: FormProps<IBook>["onFinish"] = async (values) => {
+    const res = await UpdateBook(
+      oldBook._id,
+      thumbnail,
+      sliders,
+      values.mainText,
+      values.author,
+      Number(values.price),
+      Number(values.quantity),
+      values.category
+    );
+    console.log(res);
+    if (res.statusCode === 200) {
+      message.success("Update thành công");
+      fetchBook();
+      setIsModalOpen(false);
+    } else {
+      message.error("Update thất bại");
+    }
+  };
+
+  return (
+    <>
+      <Button type="primary" onClick={() => setIsModalOpen(true)}>
+        <EditOutlined />
+      </Button>
+      <Modal
+        title="Edit Book"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+      >
+        <Form<IBook>
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{
+            mainText: oldBook.mainText,
+            author: oldBook.author,
+            price: oldBook.price,
+            quantity: oldBook.quantity,
+            category: oldBook.category,
+          }}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Form.Item<IBook>
+            label="mainText"
+            name="mainText"
+            rules={[{ required: true, message: "Please input your mainText!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item<IBook>
+            label="author"
+            name="author"
+            rules={[{ required: true, message: "Please input your author!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item<IBook>
+            label="price"
+            name="price"
+            rules={[{ required: true, message: "Please input your price!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item<IBook>
+            label="quantity"
+            name="quantity"
+            rules={[{ required: true, message: "Please input your quantity!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item<IBook>
+            label="category"
+            name="category"
+            rules={[
+              { required: true, message: "Please select your category!" },
+            ]}
+          >
+            <Select placeholder="Select category">
+              <Option value="Arts">Arts</Option>
+              <Option value="Business">Business</Option>
+              <Option value="Comics">Comics</Option>
+              <Option value="Cooking">Cooking</Option>
+              <Option value="Entertainment">Entertainment</Option>
+              <Option value="History">History</Option>
+              <Option value="Music">Music</Option>
+              <Option value="Sports">Sports</Option>
+              <Option value="Teen">Teen</Option>
+              <Option value="Travel">Travel</Option>
+            </Select>
+          </Form.Item>
+
+          <div className="flex gap-4">
+            {/* Thumbnail */}
+            <div className="flex flex-col w-1/2">
+              <Upload {...props} className="w-full">
+                <h2>Thumbnail</h2>
+                <Button icon={<UploadOutlined />}>Upload</Button>
+              </Upload>
+            </div>
+
+            {/* Slider */}
+            <div className="flex flex-col w-1/2">
+              <Upload {...slider} className="w-full">
+                <p>Slider</p>
+                <Button icon={<UploadOutlined />}>Upload</Button>
+              </Upload>
+            </div>
+          </div>
+
+          <Form.Item label={null}>
+            <Button type="primary" htmlType="submit">
+              Update
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+};
+
+export default BookEdit;
