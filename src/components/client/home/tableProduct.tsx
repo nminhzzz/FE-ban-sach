@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { Skeleton } from "antd";
 import { useNavigate } from "react-router-dom";
 type TProps = {
   book?: IBook[];
@@ -6,7 +7,8 @@ type TProps = {
   pageSize: number;
   totol?: number;
   setCurrent: (v: number) => void;
-  setPageSize: (v: number) => void;
+  setPageSize: (v: number) => void; // kept for API compatibility
+  loading?: boolean;
 };
 
 const TableProduct: React.FC<TProps> = ({
@@ -16,6 +18,7 @@ const TableProduct: React.FC<TProps> = ({
   totol,
   setCurrent,
   setPageSize,
+  loading,
 }) => {
   // tính số trang
   const totalPage = totol ? Math.ceil(totol / pageSize) : 1;
@@ -31,36 +34,50 @@ const TableProduct: React.FC<TProps> = ({
       <div className="p-4">
         {/* Grid responsive 5 cột trên desktop */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {book?.map((p) => (
-            <div
-              onClick={() => navigator(`/book/${p._id}`)}
-              key={p._id}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
-            >
-              <img
-                src={`${import.meta.env.VITE_BACKEND}/images/book/${
-                  p.thumbnail
-                }`}
-                alt={p.mainText}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-3">
-                <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">
-                  {p.mainText}
-                </h3>
-                <p className="text-red-600 font-semibold text-sm">
-                  {p.price.toLocaleString("vi-VN")} đ
-                </p>
-                <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
-                  <span className="text-gray-500">Đã bán {p.sold}</span>
+          {loading
+            ? Array.from({ length: 10 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-lg shadow overflow-hidden p-0"
+                >
+                  <div className="w-full h-56">
+                    <Skeleton.Image active style={{ width: "100%", height: "100%" }} />
+                  </div>
+                  <div className="p-3">
+                    <Skeleton active paragraph={{ rows: 2 }} title={false} />
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              ))
+            : book?.map((p) => (
+                <div
+                  onClick={() => navigator(`/book/${p._id}`)}
+                  key={p._id}
+                  className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
+                >
+                  <img
+                    src={`${import.meta.env.VITE_BACKEND}/images/book/${
+                      p.thumbnail
+                    }`}
+                    alt={p.mainText}
+                    className="w-full h-56 object-cover"
+                  />
+                  <div className="p-3">
+                    <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">
+                      {p.mainText}
+                    </h3>
+                    <p className="text-red-600 font-semibold text-sm">
+                      {p.price.toLocaleString("vi-VN")} đ
+                    </p>
+                    <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
+                      <span className="text-gray-500">Đã bán {p.sold}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
         </div>
 
         {/* Pagination */}
-        {totalPage > 1 && (
+        {!loading && totalPage > 1 && (
           <div className="flex justify-center items-center gap-2 mt-6">
             <button
               className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"

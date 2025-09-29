@@ -8,12 +8,15 @@ const PopularProduct: React.FC = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [totol, setTotol] = useState<number>();
   const { categoryBook, setCategoryBook } = useCurrentApp();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchBook = async () => {
+    setLoading(true);
     const res = await GetBook(current, pageSize);
     setTotol(res.data?.meta.total);
     // luôn đồng bộ dữ liệu hiển thị với context
     setCategoryBook(res.data?.result ?? []);
+    setLoading(false);
   };
   useEffect(() => {
     fetchBook();
@@ -27,6 +30,7 @@ const PopularProduct: React.FC = () => {
         totol={totol}
         setCurrent={setCurrent}
         setPageSize={setPageSize}
+        loading={loading}
       />
     </>
   );

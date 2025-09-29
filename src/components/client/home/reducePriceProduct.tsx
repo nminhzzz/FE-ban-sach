@@ -7,11 +7,14 @@ const ReducePriceProduct = () => {
   const [current, setCurrent] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totol, setTotol] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchBook = async () => {
+    setLoading(true);
     const res = await GetReducePriceBook(current, pageSize);
     setBook(res.data?.result);
     setTotol(res.data?.meta.total);
+    setLoading(false);
   };
   useEffect(() => {
     fetchBook();
@@ -25,6 +28,7 @@ const ReducePriceProduct = () => {
         totol={totol}
         setCurrent={setCurrent}
         setPageSize={setPageSize}
+        loading={loading}
       />
     </>
   );
