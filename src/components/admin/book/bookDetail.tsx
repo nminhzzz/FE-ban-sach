@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Drawer, Image, Divider, Tag } from "antd";
+import { Drawer, Image, Divider, Tag } from "antd";
 type TProps = {
   open: boolean;
   onClose: () => void;

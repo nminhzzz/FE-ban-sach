@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { GetBookSearch } from "@/services/api";
 
 type FieldType = {
@@ -13,12 +13,7 @@ type TProps = {
   setBookTable: (v: IBook[]) => void;
   book?: IBook[];
 };
-const BookSearch: React.FC<TProps> = ({
-  totol,
-  current,
-  setBookTable,
-  book,
-}) => {
+const BookSearch: React.FC<TProps> = ({ totol, setBookTable, book }) => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     console.log("Success:", values);
     let URL_API = `/api/v1/book?current=1&pageSize=${totol}`;

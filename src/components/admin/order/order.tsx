@@ -50,7 +50,7 @@ export default () => {
       dataIndex: "_id",
       ellipsis: true,
       hideInSearch: true,
-      render(dom, entity, index, action, schema) {
+      render(_, entity) {
         return (
           <>
             <a href="#">{entity._id}</a>
@@ -82,7 +82,7 @@ export default () => {
       valueType: "money",
       sorter: true,
       hideInSearch: true,
-      render(dom, entity, index, action, schema) {
+      render(_, entity) {
         return <>{entity.totalPrice.toLocaleString("vi-VN")} VNĐ</>;
       },
     },
@@ -100,7 +100,7 @@ export default () => {
       columns={columns}
       actionRef={actionRef}
       cardBordered
-      request={async (params, sort, filter) => {
+      request={async (params, sort) => {
         let query = "";
         if (params) {
           query += `current=${params.current}&pageSize=${params.pageSize}`;

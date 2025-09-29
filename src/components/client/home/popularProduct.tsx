@@ -5,7 +5,7 @@ import { useCurrentApp } from "@/components/context/app.context";
 
 const PopularProduct: React.FC = () => {
   const [current, setCurrent] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize] = useState<number>(10);
   const [totol, setTotol] = useState<number>();
   const { categoryBook, setCategoryBook } = useCurrentApp();
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,7 +29,6 @@ const PopularProduct: React.FC = () => {
         pageSize={pageSize}
         totol={totol}
         setCurrent={setCurrent}
-        setPageSize={setPageSize}
         loading={loading}
       />
     </>

@@ -30,7 +30,6 @@ const SearchResults: React.FC = () => {
           pageSize={searchResults.length}
           totol={searchResults.length}
           setCurrent={() => {}}
-          setPageSize={() => {}}
         />
       ) : (
         <Empty

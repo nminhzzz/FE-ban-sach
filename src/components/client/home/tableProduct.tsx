@@ -1,4 +1,3 @@
-import React from "react";
 import { Skeleton } from "antd";
 import { useNavigate } from "react-router-dom";
 type TProps = {
@@ -7,7 +6,6 @@ type TProps = {
   pageSize: number;
   totol?: number;
   setCurrent: (v: number) => void;
-  setPageSize: (v: number) => void; // kept for API compatibility
   loading?: boolean;
 };
 
@@ -17,7 +15,6 @@ const TableProduct: React.FC<TProps> = ({
   pageSize,
   totol,
   setCurrent,
-  setPageSize,
   loading,
 }) => {
   // tính số trang

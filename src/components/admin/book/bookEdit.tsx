@@ -12,7 +12,7 @@ import {
 import type { FormProps } from "antd";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { CreateBook, UpdateBook, UpLoadImage } from "@/services/api";
+import { UpdateBook, UpLoadImage } from "@/services/api";
 
 const { Option } = Select;
 

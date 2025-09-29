@@ -5,7 +5,7 @@ import TableProduct from "./tableProduct";
 const NewProduct = () => {
   const [book, setBook] = useState<IBook[]>();
   const [current, setCurrent] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize] = useState<number>(10);
   const [totol, setTotol] = useState<number>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -27,7 +27,6 @@ const NewProduct = () => {
         pageSize={pageSize}
         totol={totol}
         setCurrent={setCurrent}
-        setPageSize={setPageSize}
         loading={loading}
       />
     </>
