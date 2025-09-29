@@ -2,7 +2,7 @@ import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useCurrentApp } from "@/components/context/app.context";
 import { GetBookSearch } from "@/services/api";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 const SearchHeader = () => {
   const { 
@@ -12,7 +12,6 @@ const SearchHeader = () => {
     setIsSearching,
     setCategoryBook 
   } = useCurrentApp();
-  const [loading, setLoading] = useState(false); // debounce state only
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSearch = async (value: string) => {
@@ -23,7 +22,6 @@ const SearchHeader = () => {
       return;
     }
 
-    setLoading(true);
     setIsSearching(true);
     setSearchTerm(value);
 
@@ -42,7 +40,6 @@ const SearchHeader = () => {
       console.error("Lỗi khi tìm kiếm:", error);
       setSearchResults([]);
     } finally {
-      setLoading(false);
     }
   };
 

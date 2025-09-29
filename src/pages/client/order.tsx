@@ -58,9 +58,7 @@ const OrderPage = () => {
           {isCurrentOrder === 1 && (
             <Payment setIsCurrentOrder={setIsCurrentOrder} />
           )}
-          {isCurrentOrder === 2 && (
-            <DoneOrder setIsCurrentOrder={setIsCurrentOrder} />
-          )}
+          {isCurrentOrder === 2 && <DoneOrder />}
         </div>
       </div>
     </>
