@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Rate, Button, InputNumber, message, notification } from "antd";
 import { useCurrentApp } from "@/components/context/app.context";
+import { useNavigate } from "react-router-dom";
 
 type TProps = {
   bookChoose?: IBook;
@@ -9,6 +10,7 @@ type TProps = {
 const DetailBook: React.FC<TProps> = ({ bookChoose }) => {
   const [quantityProduct, setQuantityProduct] = useState(1);
   const { user, setCarts } = useCurrentApp();
+  const navigator = useNavigate();
 
   const handleClickAddCart = (
     id: string,
@@ -146,6 +148,7 @@ const DetailBook: React.FC<TProps> = ({ bookChoose }) => {
             <Button
               type="primary"
               className="flex-1 h-12 bg-red-500 border-red-500 hover:bg-red-600"
+              onClick={() => navigator("/order")}
             >
               Mua ngay
             </Button>

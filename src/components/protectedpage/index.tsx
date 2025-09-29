@@ -1,7 +1,7 @@
 import { FetchAccount } from "@/services/api";
-import { Button, Result } from "antd";
+import { Button, Result, Spin } from "antd";
 import { useCurrentApp } from "components/context/app.context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 interface IProps {
@@ -12,15 +12,52 @@ const ProtectedRoute = (props: IProps) => {
   const { Authentic, user } = useCurrentApp();
   const location = useLocation();
   const { setUser, setAuthentic } = useCurrentApp();
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
   useEffect(() => {
     (async () => {
-      const res = await FetchAccount();
-      if (res.statusCode === 200) {
-        setAuthentic(true);
-        setUser(res.data?.user!);
+      try {
+        setIsCheckingAuth(true);
+        const res = await FetchAccount();
+        if (res && res.statusCode === 200) {
+          setAuthentic(true);
+          setUser(res.data?.user!);
+        } else {
+          // Nếu không có response hoặc statusCode khác 200, set về false
+          setAuthentic(false);
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        // Khi có lỗi, set về false để user có thể đăng nhập lại
+        setAuthentic(false);
+        setUser(null);
+      } finally {
+        setIsCheckingAuth(false);
       }
     })();
   }, []);
+
+  // Hiển thị loading khi đang kiểm tra xác thực
+  if (isCheckingAuth) {
+    return (
+      <Spin
+        spinning={true}
+        size="large"
+        tip="Đang kiểm tra quyền truy cập..."
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "#f5f5f5",
+        }}
+      >
+        <div style={{ height: "100vh", width: "100%" }} />
+      </Spin>
+    );
+  }
 
   if (Authentic === false) {
     return (
