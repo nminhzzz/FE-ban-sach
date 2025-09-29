@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import type { TabsProps } from "antd";
 import PopularProduct from "./popularProduct";
 import NewProduct from "./newProduct";
 import IncreasePriceProduct from "./increasePriceProduct";
 import ReducePriceProduct from "./reducePriceProduct";
-import { GetBook } from "@/services/api";
 const ProductList = () => {
   const onChange = (key: string) => {
     console.log(key);

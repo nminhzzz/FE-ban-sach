@@ -12,8 +12,7 @@ const SearchHeader = () => {
     setIsSearching,
     setCategoryBook 
   } = useCurrentApp();
-  // local loading kept via debounce; not used in UI
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // debounce state only
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSearch = async (value: string) => {

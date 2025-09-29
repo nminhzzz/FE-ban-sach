@@ -1,5 +1,5 @@
 import { GetDashBroad } from "@/services/api";
-import { Col, Row, Statistic, type StatisticProps } from "antd";
+import { Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 

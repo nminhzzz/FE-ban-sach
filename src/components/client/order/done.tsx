@@ -1,12 +1,7 @@
 import { Button, Result } from "antd";
 import { useNavigate } from "react-router-dom";
 
-interface IProps {
-  setIsCurrentOrder: (value: number) => void;
-}
-
-const DoneOrder = (props: IProps) => {
-  const { setIsCurrentOrder } = props;
+const DoneOrder = () => {
   const navigate = useNavigate();
 
   return (
