@@ -1,7 +1,7 @@
 import { Register } from "@/services/api";
 import type { FormProps } from "antd";
 import { Button, Form, Input, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const RegisterPage = () => {
   type FieldType = {
@@ -10,7 +10,9 @@ const RegisterPage = () => {
     password: string;
     phone: string;
   };
+
   const navigator = useNavigate();
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const res = await Register(
       values.fullName,
@@ -19,10 +21,10 @@ const RegisterPage = () => {
       values.phone
     );
     if (res.statusCode === 201) {
-      message.success("đăng kí thành công");
+      message.success("Đăng ký thành công");
       navigator("/login");
     } else {
-      message.success("lỗi đăng kí ");
+      message.error("Lỗi đăng ký");
     }
   };
 
@@ -31,61 +33,77 @@ const RegisterPage = () => {
   ) => {
     console.log("Failed:", errorInfo);
   };
+
   return (
-    <div>
-      <h1 className="text-center">Trang đăng Kí tài khoản </h1>
-      <div className="flex items-center justify-center min-h-[20px]">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Đăng ký tài khoản
+        </h1>
+
         <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
+          name="register"
+          layout="vertical"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="fullName"
+            label="Họ và tên"
             name="fullName"
-            rules={[{ required: true, message: "Please input your fullName!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập họ tên!" }]}
           >
-            <Input autoComplete="username" />
+            <Input placeholder="Nhập họ và tên" autoComplete="username" />
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="email"
+            label="Email"
             name="email"
             rules={[
-              { required: true, message: "Please input your email!" },
-              { type: "email", message: "nhập chuẩn dạng email" },
+              { required: true, message: "Vui lòng nhập email!" },
+              { type: "email", message: "Email không hợp lệ" },
             ]}
           >
-            <Input autoComplete="email" />
+            <Input placeholder="Nhập email" autoComplete="email" />
           </Form.Item>
+
           <Form.Item<FieldType>
-            label="password"
+            label="Mật khẩu"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
           >
-            <Input.Password autoComplete="current-password" />
+            <Input.Password
+              placeholder="Nhập mật khẩu"
+              autoComplete="current-password"
+            />
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="phone"
+            label="Số điện thoại"
             name="phone"
-            rules={[{ required: true, message: "Please input your phone!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập số điện thoại!" },
+            ]}
           >
-            <Input />
+            <Input placeholder="Nhập số điện thoại" />
           </Form.Item>
 
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
-              Submit
+          <Form.Item>
+            <Button type="primary" htmlType="submit" className="w-full">
+              Đăng ký
             </Button>
           </Form.Item>
         </Form>
+
+        <p className="text-center text-gray-600">
+          Đã có tài khoản?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Đăng nhập ngay
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
+
 export default RegisterPage;

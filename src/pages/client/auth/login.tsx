@@ -2,7 +2,7 @@ import { useCurrentApp } from "@/components/context/app.context";
 import { loginAPI } from "@/services/api";
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 
 const LoginPage = () => {
@@ -17,10 +17,9 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    setLoading(true); // ✅ bắt đầu loading
+    setLoading(true);
     try {
       const res = await loginAPI(values.email, values.password);
-      console.log(res);
       if (res.statusCode === 201) {
         localStorage.setItem("access_token", res.data?.access_token!);
         message.success("Đăng nhập thành công");
@@ -41,7 +40,7 @@ const LoginPage = () => {
     } catch (err) {
       message.error(`Đăng nhập thất bại`);
     } finally {
-      setLoading(false); // ✅ kết thúc loading
+      setLoading(false);
     }
   };
 
@@ -52,15 +51,15 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-center">Trang đăng nhập tài khoản</h1>
-      <div className="flex items-center justify-center min-h-[20px]">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Đăng nhập tài khoản
+        </h1>
+
         <Form
           name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
-          initialValues={{ remember: true }}
+          layout="vertical"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -68,33 +67,41 @@ const LoginPage = () => {
           <Form.Item<FieldType>
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập email!" }]}
           >
-            <Input />
+            <Input placeholder="Nhập email" />
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="Password"
+            label="Mật khẩu"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
           >
-            <Input.Password />
+            <Input.Password placeholder="Nhập mật khẩu" />
           </Form.Item>
 
-          <Form.Item<FieldType>
-            name="remember"
-            valuePropName="checked"
-            label={null}
-          >
-            <Checkbox>Remember me</Checkbox>
+          <Form.Item<FieldType> name="remember" valuePropName="checked">
+            <Checkbox>Ghi nhớ đăng nhập</Checkbox>
           </Form.Item>
 
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit" loading={loading}>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              className="w-full"
+            >
               Đăng nhập
             </Button>
           </Form.Item>
         </Form>
+
+        <p className="text-center text-gray-600">
+          Chưa có tài khoản?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Đăng ký ngay
+          </Link>
+        </p>
       </div>
     </div>
   );
